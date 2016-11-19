@@ -1,0 +1,93 @@
+#!/usr/bin/python
+import os
+import time
+
+
+def Title():
+	print """
+      __ _                        _ _   _           _                     
+    / _(_)_ __ _____      ____ _| | | | | __ _ ___| |__   __ _ _ __ __ _ 
+    | |_| | '__/ _ \ \ /\ / / _` | | | | |/ _` / __| '_ \ / _` | '__/ _` |
+    |  _| | | |  __/\ V  V / (_| | | | | | (_| \__ \ | | | (_| | | | (_| |
+    |_| |_|_|  \___| \_/\_/ \__,_|_|_| |_|\__,_|___/_| |_|\__,_|_|  \__,_|
+                                                                      
+            
+    __/\____/\__
+    \    /\    /
+    /_  _\/_  _\
+    \/____\/  
+    |_____|   
+
+    
+    """
+
+def Menu():
+    a = raw_input("1. start the firewall:\t\n2. stop  the firewall:\n3. if you want to see your connection output\n4. to drop ip connection\n5. to drop destination\n6. users security and more\n7. add your firewall command if you have the Knowledge!!")
+    if a =="1":
+        os.system("iptables -N syn_flood")
+        time.sleep(2)
+        print "pleses wait...step 1"
+        os.system("iptables -A INPUT -p tcp --syn -j syn_flood")
+        time.sleep(2)
+        print "pleses wait..."
+        os.system("iptables -A syn_flood -m limit --limit 1/s --limit-burst 3 -j RETURN")
+        print "pleses wait...step2"
+        time.sleep(2)
+        os.system("iptables -A syn_flood -j DROP")
+        print "pleses wait...step3"
+        time.sleep(2)
+        os.system("iptables -N udp_flood")
+        print "pleses wait...step4"
+        time.sleep(2)
+        os.system("iptables -A INPUT  -p  udp -j udp_flood")
+        print "pleses wait...step5"
+        time.sleep(2)
+        os.system("iptables -A  udp_flood -m limit --limit 30/s -j RETURN")
+        print "pleses wait...step6"
+        time.sleep(2)
+        os.system("iptables -A udp_flood -j DROP")
+        time.sleep(2)
+        os.system("echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all")
+        print "finish the procss"
+        time.sleep(2)
+        os.system("clear")
+        Menu()
+    elif a=="2":
+        os.system("iptables -F")
+        Menu()
+    elif a=="3":
+        os.system("gnome-terminal -e 'watch netstat -ano'")
+    elif a=="4":
+        ip=raw_input("insert the ip you want to drop, the source ip!! :\t")
+        os.system("iptables -A INPUT -s" "\t" + ip + "\t" "-j DROP")
+    elif a=="5":
+        ip = raw_input("insert the ip you want to drop, the destination  ip!!:\t")
+        os.system("iptables -A INPUT -d" "\t" + ip + "\t" "-j DROP")
+    elif a=="6":
+            os.system("clear")
+            users=raw_input("1. access file\n2. group file edit\n3. limits users\n4. namespace\n5. sysctl\n6. back to the manu")
+            if users =="1":
+                os.system("gnome-terminal -e 'nano /etc/security/access.conf'")
+            elif users =="2":
+                os.system("gnome-terminal -e 'nano /etc/security/group.conf'")
+                users
+            elif users =="3":
+                os.system("gnome-terminal -e 'nano /etc/security/limits.conf'")
+            elif users =="4":
+                os.system("gnome-terminal -e 'nano /etc/security/namespace.conf'")
+            elif users =="5":
+                os.system("gnome-terminal -e 'nano /etc/sysctl.conf'")
+            elif users =="6":
+                os.system("clear")
+                Menu()
+    elif a=="7":
+        command=raw_input("please insert your command here (*_*):\t")
+        os.system(command)
+        print "good day!!"
+        time.sleep(3)
+        Menu()
+
+def main():
+    Title()    
+    Menu()
+main()
